@@ -21,10 +21,20 @@ if response.status_code == 200:
     # Your code goes HERE
 
     # You may delete this line - this is just here to show you that it retrieved the file
-    print(data)
+    #print(data)
 
     ################
 
 else:
     print("Failed to retrieve the JSON data")
+
+# Problem 2
+nd_wins = 0
+nd_lose=0
+for ix in range(len(data)):
+  if data[ix]["ND"]>data[ix]["Other"]:
+     nd_wins+=1
+  else:
+     nd_lose+=1
+print("Notre Dame's record is: "+str(nd_wins)+"-"+str(nd_lose))
 
