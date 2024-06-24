@@ -24,10 +24,15 @@ pwm.start(dc)
 print("Here we go! Press CTRL+C to exit")
 try:
     while 1:
-        if getDistance()<0.5: # button is pressed
+        if getDistance()<0.5: # Red turn on
             GPIO.output(RedLedPin, GPIO.HIGH)
-        elif getDistance()>1.5: # button is released:
+            GPIO.output(GreenLedPin, GPIO.LOW)
+        elif getDistance()>1.5: # Green LED turns on:
+            GPIO.output(RedLedPin, GPIO.LOW)
             GPIO.output(GreenLedPin, GPIO.HIGH)
+        else: # Off when not in range
+            GPIO.output(RedLedPin, GPIO.LOW)
+            GPIO.output(GreenLedPin, GPIO.LOW)
         time.sleep(0.075)
 except KeyboardInterrupt: # If CTRL+C is pressed, exit cleanly:
     pwm.stop() # stop PWM
