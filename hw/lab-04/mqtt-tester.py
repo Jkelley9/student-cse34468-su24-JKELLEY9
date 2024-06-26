@@ -18,7 +18,7 @@ while True:
 
     print('Sending a MQTT message!')
 
-    theMessage = '{ "Lewin" : "I am Lewin" }'
+    theMessage = '{ "Name" : "I am group Lewin" }'
 
     mqttnd.send_mqtt(theClient, "cse34468-su24/jkelley9/lab-04/info/", theMessage)
     TheCount += 1

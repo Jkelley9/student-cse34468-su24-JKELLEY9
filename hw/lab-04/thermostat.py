@@ -7,7 +7,7 @@
 import time
 from sense_hat import SenseHat
 import mqtt_link as mqttnd
-
+import json
 # Your functions go here
 def set_tens(number): # Used to create tens digit
   sense.set_pixel(0,2,(0,0,0))
@@ -353,7 +353,8 @@ sense.clear()
 
 LoopDelay = 0.5      # 250 ms per loop iteration
 
-set_temp = 25 # Starting Set temp
+# Creating Variables
+set_temp = 30 # Starting Set temp
 setting_temp=1 # Loop for setting temp
 type = "C"
 loop = 1
@@ -365,6 +366,7 @@ setting = "None"
 theClient = mqttnd.connect_mqtt()
 old_temp = int(sense.get_temperature())
 old_set_temp = 26
+
 while True:
   sense.set_pixel(7,0, (0,255,0))
     # Read the temperature
@@ -407,7 +409,8 @@ while True:
     elif event.action == 'pressed' and event.direction =='right' and type =="C":
       type = "F"
       loop = -1
-  if setting_temp ==0 and type == "C":
+  
+  if setting_temp ==0 and type == "C": # Checking if setting and if Celcius
     flashing_num()
     time.sleep(0.5)
     set_ones(set_temp%10)
@@ -438,8 +441,14 @@ while True:
   
   # Send Message if Change
   if temp != old_temp or set_temp != old_set_temp or humidity != old_humidity:
-    mqttnd.send_mqtt(theClient, "cse34468-su24/jkelley9/lab-04/thermostat/", "Current Temp: " + str(temp) + ", Set Temp: "+str(set_temp)+", Current Mode: "+ setting+", Humidity: "+ str(humidity))
+    if type =="C":
+      the_data = {"Current Temp": str(temp), "Set Temp": str(set_temp), "Current Mode": setting, "Humidity": str(humidity)}
+      theString = json.dumps(the_data)
+    elif type =="F":
+      the_data = {"Current Temp": str((temp-32)*5/9), "Set Temp": str((set_temp-32)*5/9), "Current Mode": setting, "Humidity": str(humidity)}
+      theString = json.dumps(the_data)
     print("Sending Message")
+    mqttnd.send_mqtt(theClient, "cse34468-su24/jkelley9/lab-04/info/", theString)
     old_temp = temp
     set_temp = old_set_temp
     humidity = old_humidity
